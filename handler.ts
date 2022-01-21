@@ -1,38 +1,38 @@
-import { APIGatewayEvent, APIGatewayProxyHandler } from "aws-lambda";
+import { APIGatewayEvent } from "aws-lambda";
 import "source-map-support/register";
 import Pdf from "./src/utils/pdf";
 import { pdfText, result } from "./src/interface/pdfText";
 import axios from "axios";
+import { badRequest, okResponse, errorResponse } from "./src/utils/responses";
 
-export const findKeywordInPDF: APIGatewayProxyHandler = async (
+export const findKeywordInPDF = async (
   event: APIGatewayEvent,
   _context
 ) => {
   const searchResult: Array<result> = [];
 
-  const pdfFile = await axios.get(
-    "https://researchtorevenue.files.wordpress.com/2015/04/1r41ai10801601_fong.pdf",
-    { responseType: "arraybuffer" }
-  );
-  const pdfText: pdfText[] = await Pdf.getPDFText(pdfFile.data);
-  const keywords: Array<string> =
-    event.queryStringParameters?.keywords?.split("|");
+  try {
+    if (!event.queryStringParameters?.pdfUrl || !event.queryStringParameters?.keywords) {
+      return badRequest;
+    }
 
-  for (let keyword of keywords) {
-    searchResult.push({
-      keyword,
-      searchResult: await Pdf.searchPage(pdfText, keyword),
+    const pdfFile = await axios.get(event.queryStringParameters.pdfUrl, {
+      responseType: "arraybuffer",
     });
-  }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        result: searchResult,
-      },
-      null,
-      2
-    ),
-  };
+    const pdfText: pdfText[] = await Pdf.getPDFText(pdfFile.data);
+    const keywords: Array<string> = event.queryStringParameters?.keywords?.split("|");
+
+    for (let keyword of keywords) {
+      searchResult.push({
+        keyword,
+        searchResult: await Pdf.searchPage(pdfText, keyword),
+      });
+    }
+
+    return okResponse(searchResult)
+   
+  } catch (error) {
+    return errorResponse(error);
+  }
 };

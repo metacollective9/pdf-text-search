@@ -4,7 +4,7 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
-    "test": "jest --detectOpenHandles",
+    "test": "jest --silent=false --forceExit",
     "start": "sls offline --port 3000 --stage local"
   },
   "dependencies": {
@@ -14,11 +14,13 @@
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
+    "@serverless/event-mocks": "^1.1.1",
     "@serverless/typescript": "^2.12.0",
     "@types/aws-lambda": "^8.10.64",
     "@types/jest": "^27.4.0",
     "@types/node": "^14.14.6",
     "@types/pdfjs-dist": "^2.10.378",
+    "aws-sdk-mock": "^5.6.0",
     "fork-ts-checker-webpack-plugin": "^6.0.0",
     "jest": "^27.4.7",
     "serverless-offline": "^8.3.1",
