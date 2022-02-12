@@ -1,5 +1,5 @@
 # pdf-text-search
-A simple lambda function to extract keywords from pdf. At the moment ut accepts search keywords as querystring like this http://localhost:3000/findKeywordInPDF?keywords=blah
+A simple lambda function to extract keywords from pdf. At the moment it accepts search keywords as querystring like this http://localhost:3000/findKeywordInPDF?keywords=blah
 
 This repo uses these packages - 
 * pdf to parse a pdf file (https://www.npmjs.com/package/pdf)
